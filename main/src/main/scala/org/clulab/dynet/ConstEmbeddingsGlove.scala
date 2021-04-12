@@ -1,6 +1,6 @@
 package org.clulab.dynet
 import com.typesafe.config.Config
-import edu.cmu.dynet.{Dim, Expression}
+import edu.cmu.dynet.{Dim, Expression, FloatVector}
 import org.clulab.embeddings.WordEmbeddingMap
 import org.clulab.embeddings.WordEmbeddingMapPool
 import org.slf4j.{Logger, LoggerFactory}
@@ -18,7 +18,8 @@ class ConstEmbeddingsGlove(wordEmbeddingMap: WordEmbeddingMap) extends ConstEmbe
 
   override def mkEmbedding(word: String): Expression = {
     val vector = wordEmbeddingMap.getOrElseUnknown(word)
-    Expression.input(dynetDim, vector)
+    val floatVector = new FloatVector(vector) // force a copy in the c'tor
+    Expression.input(dynetDim, floatVector)
   }
 }
 
